@@ -91,6 +91,8 @@ function TimelineEvent({ event, isLast }: { event: LogisticEvent; isLast: boolea
   );
 }
 
+import { getTrackingAction } from "@/app/actions";
+
 // ── Page (Server Component) ───────────────────────────────────────────────────
 export default async function TrackingPage({
   params,
@@ -99,14 +101,11 @@ export default async function TrackingPage({
 }) {
   const { id } = await params;
 
-  // Fetch real contra la Route Handler de Next.js (o en producción contra la API real)
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
-  const res = await fetch(`${baseUrl}/api/tracking/${encodeURIComponent(id)}`, {
-    cache: "no-store", // Siempre datos frescos (equivalente a no-cache en producción)
-  });
+  // Llamada directa a la Server Action
+  const result = await getTrackingAction(id);
 
-  // Fallback si el tracking code no existe
-  if (!res.ok) {
+  // Fallback si el tracking code no existe o hay error
+  if (!result.success || !result.data) {
     return (
       <div className="max-w-5xl mx-auto pb-12">
         <Link href="/" className="inline-flex items-center text-slate-500 hover:text-slate-900 text-sm font-medium mb-6 -ml-1">
@@ -115,13 +114,13 @@ export default async function TrackingPage({
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <Package className="h-16 w-16 text-slate-300 mb-4" />
           <h2 className="text-2xl font-bold text-slate-900 mb-2">Envío no encontrado</h2>
-          <p className="text-slate-500">El código <code className="bg-slate-100 px-2 py-0.5 rounded text-sm">{id}</code> no existe en el sistema.</p>
+          <p className="text-slate-500">El código <code className="bg-slate-100 px-2 py-0.5 rounded text-sm">{id}</code> no existe o no pudo ser cargado.</p>
         </div>
       </div>
     );
   }
 
-  const data: TrackingResponse = await res.json();
+  const data: TrackingResponse = result.data as TrackingResponse;
 
   const badgeClass = STATUS_BADGE[data.estadoActual] ?? "bg-slate-100 text-slate-700";
 
@@ -137,7 +136,10 @@ export default async function TrackingPage({
         <div>
           <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-1">Tracking ID</p>
           <h1 className="text-3xl font-bold text-slate-900 font-mono">{data.trackingCode}</h1>
-          <p className="text-slate-500 mt-1 text-sm">Detalles y estado actual del envío</p>
+          <p className="text-slate-500 mt-1 text-sm">
+            De: <span className="font-semibold text-slate-700">{data.remitente.nombre}</span> → 
+            Para: <span className="font-semibold text-slate-700">{data.destinatario.nombre}</span>
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <span className="text-sm font-medium text-slate-500">Estado:</span>

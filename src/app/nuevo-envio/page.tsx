@@ -33,6 +33,8 @@ import {
 } from "lucide-react";
 import type { CreateShipmentPayload } from "@/types/logistics";
 
+import { createShipmentAction } from "@/app/actions";
+
 // ── Helpers de validación (sincronizan con anotaciones Java del backend) ──────
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -69,15 +71,6 @@ function validatePayload(data: CreateShipmentPayload): string[] {
 }
 
 // ── State inicial del formulario ──────────────────────────────────────────────
-const EMPTY_PERSON = {
-  nombre: "",
-  telefono: "",
-  correoElectronico: "",
-  direccion: "",
-  referencias: "",
-};
-
-const EMPTY_PACKAGE = { peso: 0, largo: 0, ancho: 0, alto: 0 };
 
 export default function NuevoEnvioPage() {
   const router = useRouter();
@@ -124,19 +117,13 @@ export default function NuevoEnvioPage() {
 
     setIsLoading(true);
     try {
-      const res = await fetch("/api/shipments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const result = await createShipmentAction(payload);
 
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error((errData.errors as string[])?.join(", ") ?? "Error del servidor");
+      if (!result.success) {
+        throw new Error(result.error);
       }
 
-      const data = await res.json();
-      const trackingCode: string = data.trackingCode;
+      const trackingCode = result.trackingCode;
 
       toast.success("¡Envío registrado con éxito!", {
         description: `Tracking ID generado: ${trackingCode}`,

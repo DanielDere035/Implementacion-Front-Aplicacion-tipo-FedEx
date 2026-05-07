@@ -25,25 +25,25 @@ export default function RootLayout({
         {/* Sidebar */}
         <aside className="w-64 bg-white border-r border-slate-200 flex-col hidden md:flex shrink-0">
           <div className="h-16 flex items-center px-6 border-b border-slate-200">
-            <div className="flex items-center gap-2 text-blue-700">
+            <Link href="/" className="flex items-center gap-2 text-blue-700 hover:opacity-80 transition-all hover:scale-105 active:scale-95 duration-200">
               <Package className="h-6 w-6" />
               <span className="text-xl font-bold tracking-tight">LogiTrack</span>
-            </div>
+            </Link>
           </div>
           <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-            <Link href="/" className="flex items-center gap-3 px-3 py-2.5 bg-blue-50 text-blue-700 rounded-md font-medium">
+            <Link href="/" className="flex items-center gap-3 px-3 py-2.5 bg-blue-50 text-blue-700 rounded-xl font-semibold shadow-sm hover:translate-x-1 transition-all duration-200">
               <Home className="h-5 w-5" />
               Dashboard
             </Link>
-            <Link href="/tracking/ABC-12345678" className="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-md font-medium transition-colors">
+            <Link href="/rastreo" className="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 hover:translate-x-1 rounded-xl font-medium transition-all duration-200">
               <MapPin className="h-5 w-5" />
               Rastreo Rápido
             </Link>
-            <Link href="/nuevo-envio" className="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-md font-medium transition-colors">
+            <Link href="/nuevo-envio" className="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 hover:translate-x-1 rounded-xl font-medium transition-all duration-200">
               <PlusCircle className="h-5 w-5" />
               Nuevo Envío
             </Link>
-            <Link href="#" className="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-md font-medium transition-colors">
+            <Link href="#" className="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 hover:translate-x-1 rounded-xl font-medium transition-all duration-200">
               <Settings className="h-5 w-5" />
               Configuración
             </Link>
